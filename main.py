@@ -408,7 +408,7 @@ def _is_ignored_control(tag) -> bool:
 def load_form_spec(session: requests.Session, tab: TabDef, lang: str) -> dict:
     url = f"{BASE}{tab.path}?language={lang}"
     html = fetch_html(session, url)
-    soup = BeautifulSoup(html, "lxml")
+    soup = BeautifulSoup(html, "html.parser")
 
     form = soup.find("form", id=re.compile(r"^views-exposed-form-"))
     if not form:
@@ -637,7 +637,7 @@ def extract_links_from_html(tab: TabDef, html: str) -> List[str]:
     out = []
     seen = set()
     try:
-        soup = BeautifulSoup(html or "", "lxml")
+        soup = BeautifulSoup(html or "", "html.parser")
         scope = (
             soup.select_one("table.views-table") or
             soup.select_one(".view-content") or
