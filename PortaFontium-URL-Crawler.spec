@@ -22,7 +22,7 @@ exe = EXE(
     a.binaries,
     a.datas,
     [],
-    name='PortaFontium-Link-Crawler',
+    name='PortaFontium-URL-Crawler',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,

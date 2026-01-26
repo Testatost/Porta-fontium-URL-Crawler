@@ -12,7 +12,7 @@ from bs4 import BeautifulSoup
 import urllib3
 import warnings
 
-from PySide6.QtCore import QObject, QThread, Signal, Qt
+from PySide6.QtCore import QObject, QThread, Signal, Qt, Slot
 from PySide6.QtWidgets import (
     QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QGridLayout,
     QLabel, QLineEdit, QPushButton, QFileDialog, QMessageBox, QTextEdit,
@@ -1005,6 +1005,11 @@ class MainWindow(QMainWindow):
         self._build_ui()
         self._load_all_forms()
 
+    @Slot(str)
+    def _on_worker_log(self, msg: str):
+        tabkey = self._current_tab_key()
+        self._append_log(tr(self.lang, "log_prefix", tab=self._tab_title(tabkey)) + msg)
+
     def _build_ui(self):
         root = QWidget()
         self.setCentralWidget(root)
@@ -1430,7 +1435,7 @@ class MainWindow(QMainWindow):
         self._worker.moveToThread(self._thread)
 
         self._thread.started.connect(self._worker.run)
-        self._worker.log.connect(lambda m: self._append_log(tr(self.lang, "log_prefix", tab=self._tab_title(tabkey)) + m))
+        self._worker.log.connect(self._on_worker_log, Qt.QueuedConnection)
         self._worker.failed.connect(self._on_failed)
         self._worker.done.connect(self._on_done)
 
